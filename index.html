@@ -1,0 +1,2052 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.min.css">
+  <script src="lib/onsenui/js/onsenui.min.js"></script> -->
+  <!-- <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css"> -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.min.js" ></script>
+  <script src="lib/svg/dist/gauge.min.js"></script>
+  <script type="text/javascript"> 
+    function renderTime() {
+    var mydate = new Date();
+    var year = mydate.getYear();
+    if (year <1000){
+    year += 1900
+    }
+    var enlabels=[];
+    var day = mydate.getDay();
+    var month = mydate.getMonth();
+    var daym = mydate.getDate();
+    var dayarray = new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday");
+    var montharray = new Array("January","February","March","April","May","June","July","August","September","October","November","December");
+    var currentTime = new Date();
+    var h= currentTime.getHours();
+    var m = currentTime.getMinutes();
+    var s = currentTime.getSeconds();
+    if (h==24){
+      h=0;
+      }else if (h>12){
+      h=h-0;
+      }
+    if (h<10){
+      h="0"+h;
+      }
+    if(m<10){
+      m="0"+m;
+      }
+    if (s<10){
+      s="0"+s;
+      }
+    var myClock = document.getElementById("clockTab2");
+    myClock.textContent = ""+dayarray[day]+"  "+daym+"  "+montharray[month]+" "+year+"|"+h+":"+m+":"+s;
+    myClock.innerText = ""+dayarray[day]+" "+daym+" "+montharray[month]+" "+year+" | "+h+":"+m+":"+s;
+    setTimeout("renderTime()",1000);
+    }
+  </script>
+   <style>
+
+    .graph {
+            padding: 10px;
+            position: relative;
+            overflow-x: scroll;
+            width: 100%;}
+    
+              .graph-container {
+                height: 500px;
+                width: 100%;
+                min-width: 100%
+            }
+    
+     
+     .chartWrapper {
+     position: relative;
+    }
+    
+    .chartWrapper > canvas {
+      position: absolute;
+      left: 0;
+      top: 0;
+      pointer-events: none;
+    }
+    
+    .chartAreaWrapper {
+      width: 600px;
+      overflow-x: scroll;
+    }
+    
+     
+     
+     
+     
+     
+        .slidecontainer {
+          width: 90%;
+          margin: 0 auto;
+        }
+        
+        .slider {
+          -webkit-appearance: none;
+          width: 100%;
+          height: 4px;
+          border-radius: 1px;
+          background: #656869;
+          outline: none;
+          opacity: 0.7;
+          -webkit-transition: .2s;
+          transition: opacity .2s;
+        }
+        
+        .slider:hover {
+          opacity: 1;
+        }
+        
+        .slider::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          appearance: none;
+          width: 25px;
+          height: 25px;
+          border-radius: 50%;
+          background: rgb(30, 221, 5);
+          cursor: pointer;
+        }
+        
+        .slider::-moz-range-thumb {
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: rgb(215, 217, 231);
+          cursor: pointer
+        }
+       
+    
+        .button {
+          background-color: rgb(80, 240, 10); /* Green */
+          border: none;
+          font-size:11px;
+          font-weight: bold;
+          width:20%;
+          height:5%;
+          color: black;
+          padding: 2px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          margin: 3px;
+          cursor: pointer;
+        }
+        
+        .buttonc {
+          background-color: #4CAF50;
+          border: none;
+          color: white;
+          padding: 15px;
+          text-align: center;
+          text-decoration: none;
+          display: inline-block;
+          font-size: 14px;
+          margin: 4px 2px;
+          border-radius: 50%;
+          }
+
+        .gauge-container > .gauge > .dial {
+      stroke: #d9dcdf;
+      stroke-width: 10;
+      }
+    
+      .gauge-container > .gauge > .value {
+      stroke: black;
+    
+      stroke-width: 10;
+      }
+    
+      .gauge-container > .gauge {
+      width:100%;
+      height: 150px;
+      }
+    
+      .gauge-container  {
+      background-color: rgb(236, 234, 231);
+      border-radius: 10px;
+      }
+    
+      .gauge-container > .gauge > .value-text {
+      fill: black;
+      font-family: sans, 'sans-serif';
+      font-weight: bold;
+      font-size: 0.8em;
+    
+      } 
+     
+      .chart-container {
+        width: 200px;
+        height:150px
+    }
+    .dot {
+      height: 25px;
+      width: 25px;
+      background-color: #bbb;
+      border-radius: 50%;
+      display: inline-block;
+      
+    }
+    .buttonRelayOff {background-color: rgb(220, 200, 200);}
+    
+        input[type='text'] { text-align:center ; font-size: 18px;width: 95px}
+    </style>
+        </style>
+
+
+
+</head>
+<body onload="renderTime()">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://cdn.netpie.io/microgear.js"></script>
+  <!-- <script src="https://www.gstatic.com/firebasejs/6.4.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/3.1.0/firebase-database.js"></script> -->
+    
+
+      <script>
+      var minTemp;  //get from backup file
+      var maxTemp;  //get from backup file
+      var minTempx; 
+      var maxTempx;
+      var minHumid; //get from backup file
+      var maxHumid; //get from backup file
+      var minHumidx; 
+      var maxHumidx;
+      var minAmmo; //get from backup file
+      var maxAmmo; //get from backup file
+      var minAmmox; 
+      var maxAmmox;
+      var minLight; //get from backup file
+      var maxLight; //get from backup file
+      var minLightx; 
+      var maxLightx;
+      var haveData;
+      ////////////////////////////////////////////// Remote Control
+      var automanux =1;
+      var relay1x;
+      var relay2x;
+      var relay3x;
+      var relay4x;
+      var limitSetx;
+      var led1x;
+      var led2x;
+      var led3x;
+      var led4x;
+      ////////////////////////////////////////////////
+      var objKeys;
+      var px1=[];
+      var px2=[];
+      var px3=[];
+      var px4=[];
+      var px5=[];
+      var px6=[];
+      var isbt24Hr=false;
+      var isbt1Hr=false;
+      var isbt10Min=false;
+      var isbtNow=true;
+      var keylenx;
+      var feedDatAllx;
+      var enlabels=[];
+      //////////////////////////////////////////////
+      var isLimit = false;
+      var ES8266minTemp = "0";
+      var ES8266maxTemp = "0";
+      var ES8266minHumid = "0";
+      var ES8266maxHumid = "0";
+      var ES8266minLight = "0";
+      var ES8266maxLight = "0";
+      var ES8266minAmmo = "0";
+      var ES8266maxAmmo = "0";
+      //////////////////////////////////////////////
+      var slideMax;
+      var slideNow;
+
+
+
+      //var nowtempmax;
+      // Your web app's Firebase configuration
+      // var firebaseConfig = {
+      //   apiKey: "AIzaSyAlHsgei0Ok2YiA7tulv0LtEj2kDEla5y4",
+      //   authDomain: "smartfarm-b8809.firebaseapp.com",
+      //   databaseURL: "https://smartfarm-b8809.firebaseio.com",
+      //   projectId: "smartfarm-b8809",
+      //   storageBucket: "",
+      //   messagingSenderId: "508254090169",
+      //   appId: "1:508254090169:web:49cfe321c8ecb114"
+      // };
+      // Initialize Firebase
+      //firebase.initializeApp(firebaseConfig);
+      //console.log(firebase);
+      //getChartDatafromFeed();
+
+      function set1000(){
+      isbtNow=false;
+      document.getElementById('btNow').style="background-color:rgb(220, 200, 200)";
+      isbt1Hr=false;
+      document.getElementById('bt100').style="background-color:rgb(220, 200, 200)";
+      isbt10Min=false;
+      document.getElementById('bt20').style="background-color:rgb(220, 200, 200)";
+      isbt24Hr=true;
+      document.getElementById('bt1000').style="background-color:rgb(80, 240, 10)";
+      console.log("mode==set1000");
+      sliEnable();
+      getDataAllfromFeed(1000);
+    //var slimin=document.getElementById("mySli").min="1";
+    //var slimax=document.getElementById("mySli").max="4";
+    //document.getElementById('mySli').value="4";
+    //sliderChange(4);
+    //console.log("min="+slimin +":"+"max="+slimax);
+    }
+
+    function set100(){
+      isbtNow=false;
+      document.getElementById('btNow').style="background-color:rgb(220, 200, 200)";
+      isbt10Min=false;
+      document.getElementById('bt20').style="background-color:rgb(220, 200, 200)";
+      isbt24Hr=false;
+      document.getElementById('bt1000').style="background-color:rgb(220, 200, 200)";
+      isbt1Hr=true;
+      document.getElementById('bt100').style="background-color:rgb(80, 240, 10)";
+      console.log("mode==set100");
+      sliEnable();
+      getDataAllfromFeed(100);
+
+    //var slimin=document.getElementById('mySli').min="1";
+    //var slimax=document.getElementById('mySli').max="48";
+    //document.getElementById('mySli').value="48";
+    //sliderChange(8);
+    //console.log("min="+slimin +":"+"max="+slimax);
+    }
+
+
+
+      function set20(){  
+      isbtNow=false;
+      document.getElementById('btNow').style="background-color:rgb(220, 200, 200)";
+      isbt24Hr=false;
+      document.getElementById('bt1000').style="background-color:rgb(220, 200, 200)";
+      isbt1Hr=false;
+      document.getElementById('bt100').style="background-color:rgb(220, 200, 200)";
+      isbt10Min=true;
+      document.getElementById('bt20').style="background-color:rgb(80, 240, 10)";
+      console.log("mode==set20");
+      sliEnable();
+      getDataAllfromFeed(20);
+      
+    // var slimin= document.getElementById('mySli').min="1";
+    //var slimax=document.getElementById('mySli').max="288";
+    //document.getElementById('mySli').value="288";
+    //sliderChange(40);
+    //console.log("min="+slimin +":"+"max="+slimax);
+    }
+
+    function sliEnable(){
+      document.getElementById('mySli').removeAttribute("disabled");
+      document.getElementById('rev2').removeAttribute("disabled");
+      document.getElementById('rev1').removeAttribute("disabled");
+      document.getElementById('fwd1').removeAttribute("disabled");
+      document.getElementById('fwd2').removeAttribute("disabled");
+    }
+
+
+    function chartSli(sli){
+      //getDataAllfromFeed();
+      console.log("chartSli")
+      console.log("sli:===>"+sli)
+
+               pdat1=[];
+               pdat2=[];
+               pdat3=[];
+               pdat4=[];
+               pdat5=[];
+               pdat6=[];
+     // 4000 data          
+     if (isbt24Hr){ 
+       console.log("ButtonMode:1000");
+       console.log("datLen:"+px1.length);
+          for (i=((sli-1)*1000);i<(1000+(sli-1)*1000);i++){
+              var param1=px6[i];//timeline
+              var param2=px1[i];//ammo
+              var param3=px2[i];//flow
+              var param4=px3[i];//humid
+              var param5=px4[i];//light
+              var param6=px5[i];//temp 
+              pdat1.push(param1);//timeline
+              pdat2.push(param6);//temp
+              pdat3.push(param4);//humid
+              pdat4.push(param2);//ammo
+              pdat5.push(param5);//light
+              pdat6.push(param3);//flow
+            }
+            BuildChart(pdat1,pdat2,pdat3,pdat4,pdat5,pdat6);
+     }
+
+    if (isbt1Hr){
+      console.log("ButtonMode:100");
+       console.log("datLen:"+px1.length);
+          for (i=((sli-1)*100);i<(100+(sli-1)*100);i++){
+            var param1=px6[i];
+              var param2=px1[i];
+              var param3=px2[i];
+              var param4=px3[i];
+              var param5=px4[i];
+              var param6=px5[i]; 
+              pdat1.push(param1);//timeline
+              pdat2.push(param6);//temp
+              pdat3.push(param4);//humid
+              pdat4.push(param2);//ammo
+              pdat5.push(param5);//light
+              pdat6.push(param3);//flow
+            }
+            BuildChart(pdat1,pdat2,pdat3,pdat4,pdat5,pdat6);
+     }
+
+
+     if (isbt10Min){
+      console.log("ButtonMode:20");
+       console.log("datLen:"+px1.length);
+          for (i=((sli-1)*20);i<(20+(sli-1)*20);i++){
+            var param1=px6[i];
+              var param2=px1[i];
+              var param3=px2[i];
+              var param4=px3[i];
+              var param5=px4[i];
+              var param6=px5[i]; 
+              pdat1.push(param1);//timeline
+              pdat2.push(param6);//temp
+              pdat3.push(param4);//humid
+              pdat4.push(param2);//ammo
+              pdat5.push(param5);//light
+              pdat6.push(param3);//flow
+            }
+            BuildChart(pdat1,pdat2,pdat3,pdat4,pdat5,pdat6);
+     }
+
+     if (isbtNow){ // 4000 data => 20*200 pages
+       console.log("nowChartSli*******");
+      if (px1.length > 20){
+          for (i=(px1.length-20);i<px1.length;i++){
+            var param1=px6[i];
+              var param2=px1[i];
+              var param3=px2[i];
+              var param4=px3[i];
+              var param5=px4[i];
+              var param6=px5[i]; 
+              pdat1.push(param1);//timeline
+              pdat2.push(param6);//temp
+              pdat3.push(param4);//humid
+              pdat4.push(param2);//ammo
+              pdat5.push(param5);//light
+              pdat6.push(param3);//flow
+            }
+            BuildChart(pdat1,pdat2,pdat3,pdat4,pdat5,pdat6);
+        }
+     }
+    }
+    function chartNow(){
+      isbt24Hr=false;
+      document.getElementById('bt1000').style="background-color:rgb(220, 200, 200)";
+      isbt1Hr=false;
+      document.getElementById('bt100').style="background-color:rgb(220, 200, 200)";
+      isbt10Min=false;
+      document.getElementById('bt20').style="background-color:rgb(220, 200, 200)";
+      isbtNow=true;
+      document.getElementById('btNow').style="background-color:rgb(80, 240, 10)";
+      document.getElementById('mySli').setAttribute("disabled","disabled");
+      document.getElementById('rev2').setAttribute("disabled","disabled");
+      document.getElementById('rev1').setAttribute("disabled","disabled");
+      document.getElementById('fwd1').setAttribute("disabled","disabled");
+      document.getElementById('fwd2').setAttribute("disabled","disabled");
+
+      chartSli(0);
+      document.getElementById('mySli').min=0;
+      document.getElementById('mySli').max=100;
+      document.getElementById('mySli').value=50;
+      document.getElementById('sliDat').innerHTML="";
+      //.slider::-webkit-slider-thumb
+      //document.getElementById('rev2').slider-webkit-slider-thump.backgroundColor=
+      //document.getElementById('rev2').style="background-color:rgb(217, 217, 217)";
+      //document.getElementById('rev1').style="background-color:rgb(217, 217, 217)";
+      //document.getElementById('fwd1').style="background-color:rgb(217, 217, 217)";
+      //document.getElementById('fwd2').style="background-color:rgb(217, 217, 217)";
+      //document.getElementById('mySli').style="background-color:rgb(217, 217, 217)";
+      
+
+      
+
+    }
+
+
+      function btMinTempDec(){
+        var dec1 =document.getElementById('boxminTemp').value;
+
+        if (dec1>0){
+          dec1--;
+        document.getElementById('boxminTemp').value=dec1;
+        minTempx=dec1;
+        document.getElementById('btSet').removeAttribute("disabled");
+        }
+       
+       }
+       function btMinTempInc(){
+        var inc1= document.getElementById('boxminTemp').value;
+        var max1 =document.getElementById('boxmaxTemp').value;
+        inc1++;
+         if (inc1>max1){
+        document.getElementById('boxminTemp').value=inc1;
+        document.getElementById('boxmaxTemp').value=inc1;
+        minTempx=inc1;
+        maxTempx=inc1;
+        }else{
+        document.getElementById('boxminTemp').value=inc1;
+        minTempx=inc1;
+        }
+        document.getElementById('btSet').removeAttribute("disabled"); 
+      }
+      function btMaxTempDec(){
+        var dec2 =document.getElementById('boxmaxTemp').value;
+        var min2=document.getElementById('boxminTemp').value;
+        if (dec2>0){
+        dec2--;
+        document.getElementById('boxmaxTemp').value=dec2;
+        maxTempx=dec2;
+        document.getElementById('btSet').removeAttribute("disabled");
+        }
+        if (dec2>=0 && dec2<min2){        
+        document.getElementById('boxminTemp').value=dec2;
+        minTempx=dec2;
+        document.getElementById('btSet').removeAttribute("disabled");
+        }
+       }
+       function btMaxTempInc(){
+        var inc2= document.getElementById('boxmaxTemp').value;
+        inc2++;
+        document.getElementById('boxmaxTemp').value=inc2;
+        maxTempx=inc2;
+        document.getElementById('btSet').removeAttribute("disabled");
+       }
+        //========================================================================
+       function btMinHumidDec(){
+        var dec3 =document.getElementById('boxminHumid').value;
+        if (dec3>0){
+          dec3--;
+        document.getElementById('boxminHumid').value=dec3;
+        minHumidx=dec3;
+        document.getElementById('btSet').removeAttribute("disabled");
+        }
+       
+       }
+       function btMinHumidInc(){
+        var inc3= document.getElementById('boxminHumid').value;
+        var max3 =document.getElementById('boxmaxHumid').value;
+        inc3++;
+        if (inc3>max3){
+        document.getElementById('boxminHumid').value=inc3;
+        document.getElementById('boxmaxHumid').value=inc3;
+        minHumidx=inc3;
+        maxHumidx=inc3;
+        }else{
+        document.getElementById('boxminHumid').value=inc3;
+        minHumidx=inc3;
+        }
+        document.getElementById('btSet').removeAttribute("disabled");
+       }
+       
+       function btMaxHumidDec(){
+        var dec4 =document.getElementById('boxmaxHumid').value;
+        var min4= document.getElementById('boxminHumid').value;
+        if (dec4>0){
+          dec4--;
+        document.getElementById('boxmaxHumid').value=dec4;
+        maxHumidx=dec4;
+        document.getElementById('btSet').removeAttribute("disabled");
+        }
+        if (dec4>=0 && dec4<min4){
+          document.getElementById('boxminHumid').value;
+          minHumidx=dec4;
+          document.getElementById('btSet').removeAttribute("disabled");
+        }
+        
+       }
+       function btMaxHumidInc(){
+        var inc4 =document.getElementById('boxmaxHumid').value;
+          inc4++;
+        document.getElementById('boxmaxHumid').value=inc4;
+        maxHumidx=inc4;
+        document.getElementById('btSet').removeAttribute("disabled");
+       }
+       //=================================================================
+
+       function btMinAmmoDec(){
+        var dec5 =document.getElementById('boxminAmmo').value;
+        if (dec5>0){
+          dec5--;
+        document.getElementById('boxminAmmo').value=dec5;
+        minAmmox=dec5;
+        document.getElementById('btSet').removeAttribute("disabled");
+        }
+        
+       }
+       function btMinAmmoInc(){
+        var inc5 =document.getElementById('boxminAmmo').value;
+        var max5 =document.getElementById('boxmaxAmmo').value;
+        inc5++;
+        if (inc5>max5){
+        document.getElementById('boxminAmmo').value=inc5;
+        document.getElementById('boxmaxAmmo').value=inc5;
+        minAmmox=inc5;
+        maxAmmox=inc5;
+        }else{
+          document.getElementById('boxminAmmo').value=inc5;
+        minAmmox=inc5;
+        } 
+        document.getElementById('btSet').removeAttribute("disabled");
+       }
+       
+       function btMaxAmmoDec(){
+        var dec6 =document.getElementById('boxmaxAmmo').value;
+        var min6 =document.getElementById('boxminAmmo').value;
+        if (dec6>0){
+          dec6--;
+        document.getElementById('boxmaxAmmo').value=dec6;
+        maxAmmox=dec6;
+        document.getElementById('btSet').removeAttribute("disabled");
+        }
+        if (dec6>=0 && dec6<min6){
+          document.getElementById('boxmaxAmmo').value;
+          minAmmox=dec6;
+          document.getElementById('btSet').removeAttribute("disabled");
+        }
+        
+      }
+      function btMaxAmmoInc(){
+        var inc6 =document.getElementById('boxmaxAmmo').value;
+          inc6++;
+        document.getElementById('boxmaxAmmo').value=inc6;
+        maxAmmox=inc6;
+        document.getElementById('btSet').removeAttribute("disabled");
+      }
+      
+      //===================================================================
+      
+      function btMinLightDec(){
+        var dec7 =document.getElementById('boxminLight').value;
+        if (dec7>0){
+          dec7--;
+        document.getElementById('boxminLight').value=dec7;
+        minLightx=dec7;
+        document.getElementById('btSet').removeAttribute("disabled");
+        }
+        
+      }
+      function btMinLightInc(){
+        var inc7 =document.getElementById('boxminLight').value;
+        var max7 =document.getElementById('boxmaxLight').value;
+        inc7++;
+        if (inc7>max7){
+        document.getElementById('boxminLight').value=inc7;
+        document.getElementById('boxmaxLight').value=inc7;
+        minLightx=inc7;
+        maxLightx=inc7;
+        }else{
+        document.getElementById('boxminLight').value=inc7;
+        minLightx=inc7;
+        }
+        document.getElementById('btSet').removeAttribute("disabled");
+      } 
+
+        
+
+      function btMaxLightDec(){
+        var dec8 =document.getElementById('boxmaxLight').value;
+        var min8 =document.getElementById('boxminLight').value;
+        if (dec8>0){
+          dec8--;
+        document.getElementById('boxmaxLight').value=dec8;
+        maxLightx=dec8;
+        document.getElementById('btSet').removeAttribute("disabled");
+        }
+        if (dec8>=0 && dec8<min8){
+          document.getElementById('boxminLight').value=dec8;
+          minLightx=dec8;
+          document.getElementById('btSet').removeAttribute("disabled");
+        }
+      }
+      function btMaxLightInc(){
+        var inc8 =document.getElementById('boxmaxLight').value;
+          inc8++;
+        document.getElementById('boxmaxLight').value=inc8;
+        maxLightx=inc8;
+        document.getElementById('btSet').removeAttribute("disabled");
+      }
+      
+      function saveLimitData(){
+      
+      //document.getElementsByName('btLoLight').setAttribute("disabled","disabled");
+      document.getElementById('btMinDnTemp').setAttribute("disabled","disabled");
+      document.getElementById('btMinUpTemp').setAttribute("disabled","disabled");
+      document.getElementById('btMaxDnTemp').setAttribute("disabled","disabled");
+      document.getElementById('btMaxUpTemp').setAttribute("disabled","disabled");
+      document.getElementById('btMinDnHumid').setAttribute("disabled","disabled");
+      document.getElementById('btMinUpHumid').setAttribute("disabled","disabled");
+      document.getElementById('btMaxDnHumid').setAttribute("disabled","disabled");
+      document.getElementById('btMaxUpHumid').setAttribute("disabled","disabled");
+      document.getElementById('btMinDnAmmo').setAttribute("disabled","disabled");
+      document.getElementById('btMinUpAmmo').setAttribute("disabled","disabled");
+      document.getElementById('btMaxDnAmmo').setAttribute("disabled","disabled");
+      document.getElementById('btMaxUpAmmo').setAttribute("disabled","disabled");
+      document.getElementById('btMinDnLight').setAttribute("disabled","disabled");
+      document.getElementById('btMinUpLight').setAttribute("disabled","disabled");
+      document.getElementById('btMaxDnLight').setAttribute("disabled","disabled");
+      document.getElementById('btMaxUpLight').setAttribute("disabled","disabled");
+      document.getElementById('btSet').setAttribute("disabled","disabled");
+        /* var data={
+          //Relay1: relay1x,
+          //Relay2: relay2x,
+          //Relay3: relay3x,
+          //Relay4: relay4x,
+          //limitSet:1,
+          minTemp: minTempx,
+          maxTemp: maxTempx,
+          minHumid: minHumidx,
+          maxHumid: maxHumidx,
+          minAmmo:minAmmox,
+          maxAmmo:maxAmmox,
+          minLight:minLightx,
+          maxLight:maxLightx
+        } */
+        var msgLimit = minTempx+","+maxTempx +","+minHumidx+","+maxHumidx+","+minAmmox+","+maxAmmox+","+ minLightx+","+maxLightx;
+        microgear.publish("/limit",msgLimit);
+        //microgear.chat("ESP8266","tmin="+minTempx);
+        //microgear.chat("ESP8266","tmax="+maxTempx);
+        //microgear.chat("ESP8266","hmin="+minHumidx);
+        //microgear.chat("ESP8266","hmax="+maxHumidx);
+        //microgear.chat("ESP8266","lmin="+minLightx);
+        //microgear.chat("ESP8266","lmax="+maxLightx);
+        //microgear.chat("ESP8266","amin="+minAmmox);
+        //microgear.chat("ESP8266","amax="+maxAmmox);
+        //microgear.publish("/limit/setting",data);
+        // var database = firebase.database();
+        // //console.log(data);
+        // var ref = database.ref('LimitData');
+        // if (haveData==0){
+        //   ref.set(data);
+        //   console.log("Limit Data set end");
+        // }else{
+        //   ref.update(data);
+        console.log("-----Limit Data update end-----");
+        // }
+      }
+       function callLimitData(){
+        microgear.chat("ESP8266","?");
+        console.log("microgear chat  ************************");
+      //   var database = firebase.database();
+      //   var ref = database.ref('LimitData');
+      //   ref.on('value',gotData,errData);
+      //   console.log("call end");  
+       }
+
+      function gotFeedDataNow(data){
+        var feedDataNow=data.val();
+        document.getElementById('boxShowTemp').value=feedDataNow.Temperature;
+        document.getElementById('boxShowHumid').value=feedDataNow.Humid;
+        document.getElementById('boxShowAmmo').value=feedDataNow.Ammonia;
+        document.getElementById('boxShowLight').value=feedDataNow.Light;
+        document.getElementById('boxShowFlow').value=feedDataNow.Flow;
+        var myTemp = feedDataNow.Temperature;
+        console.log("myTemp:"+myTemp);
+        var myHumid = feedDataNow.Humid;
+        console.log("myHumid:"+myHumid);
+        var thiDat=myTHI(myTemp,myHumid);
+        console.log("thi:"+thiDat);
+      }
+
+
+
+      function gotData(){
+          console.log("gotData -----> set limit to all");
+          haveData = 1;
+          minTempx = ES8266minTemp;
+          maxTempx = ES8266maxTemp;
+          minHumidx= ES8266minHumid;
+          maxHumidx= ES8266maxHumid;
+          minLightx= ES8266minLight;
+          maxLightx= ES8266maxLight;
+          minAmmox = ES8266minAmmo;
+          maxAmmox = ES8266maxAmmo;
+          document.getElementById('boxminTemp').value = minTempx;
+          document.getElementById('boxmaxTemp').value = maxTempx;
+          document.getElementById('boxminHumid').value = minHumidx;
+          document.getElementById('boxmaxHumid').value = maxHumidx;
+          document.getElementById('boxminLight').value = minLightx;
+          document.getElementById('boxmaxLight').value = maxLightx;
+          document.getElementById('boxminAmmo').value = minAmmox;
+          document.getElementById('boxmaxAmmo').value = maxAmmox;
+          console.log("minTemp:===>"+ minTempx);
+          console.log("maxTemp:===>"+ maxTempx);
+          console.log("minHumid:===>"+ minHumidx);
+          console.log("maxHumid:===>"+ maxHumidx);
+          console.log("minAmmo:===>"+ minAmmox);
+          console.log("maxAmmo:===>"+ maxAmmox);
+          console.log("minLight:===>"+ minLightx);
+          console.log("maxLight:===>"+ maxLightx);
+      }
+
+      function errData(err){
+        console.log('Error!');
+      }
+
+      function setLedStatus(){
+        //var ledData = data.val();
+
+        console.log("=====setLedStatus=====");
+          
+          if (led1x==1){
+            document.getElementById('ledNo1').style="background-color:red";
+          }else{
+            document.getElementById('ledNo1').style="background-color:#bbb";
+          }
+          if (led2x==1){
+            document.getElementById('ledNo2').style="background-color:red";
+          }else{
+            document.getElementById('ledNo2').style="background-color:#bbb";
+          }
+          if (led3x==1){
+            document.getElementById('ledNo3').style="background-color:red";
+          }else{
+            document.getElementById('ledNo3').style="background-color:#bbb";
+          }
+          if (led4x==1){
+            document.getElementById('ledNo4').style="background-color:red";
+          }else{
+            document.getElementById('ledNo4').style="background-color:#bbb";
+          }
+        }
+     function chatAutoManu(){
+       microgear.chat("ESP8266","mode")
+       console.log("chatAutoManu");
+     }
+
+
+     function DoAutoManu(){
+        if (automanux == 0 ){
+      // automanux=0;   
+      document.getElementById('btAutoManu').value="MANUAL";
+      document.getElementById('btAutoManu').style="background-color:rgb(240, 215, 104)";
+      console.log("doManu");
+      document.getElementById('btRelay1').removeAttribute("disabled");
+      document.getElementById('btRelay2').removeAttribute("disabled");
+      document.getElementById('btRelay3').removeAttribute("disabled");
+      document.getElementById('btRelay4').removeAttribute("disabled"); 
+      saveControlStatus();   
+        }else{
+      //automanux=1;
+      document.getElementById('btAutoManu').value="AUTO";
+      document.getElementById('btAutoManu').style="background-color:rgb(80, 240, 10)";
+      console.log("doAuto");
+      document.getElementById('btRelay1').setAttribute("disabled","disabled");
+      document.getElementById('btRelay2').setAttribute("disabled","disabled");
+      document.getElementById('btRelay3').setAttribute("disabled","disabled");
+      document.getElementById('btRelay4').setAttribute("disabled","disabled");
+      saveControlStatus();
+        }
+      }
+
+      function saveControlStatus(){
+        console.log("saveControlStatus");
+      }
+
+      function chatRelay1(){
+        microgear.chat("ESP8266","sensor");
+        DoRelay1();
+      }
+
+      function chatRelay2(){
+        microgear.chat("ESP8266","fan");
+        DoRelay2();
+      }
+
+      function chatRelay3(){
+        microgear.chat("ESP8266","pump");
+        DoRelay3();
+      }
+
+      function chatRelay4(){
+        microgear.chat("ESP8266","light");
+        DoRelay4();
+      }
+
+      function DoRelay1(){
+        if (relay1x == 1 ){
+      relay1x=0;  
+      //document.getElementById('btRelay1').style="background-color:rgb(200, 220, 230)";
+      document.getElementById('btRelay1').style="background-color:rgb(230, 70, 70)";
+      console.log("doRelay1_OFF"); 
+      saveControlStatus();  
+      setTimeout("doDelay1()",1000);
+        }else{
+      relay1x=1;
+      document.getElementById('btRelay1').style="background-color:rgb(230, 70, 70)";
+      console.log("doRelay1_ON");
+      saveControlStatus();
+      setTimeout("doDelay1()",1000);
+        }
+      }
+
+      function DoRelay2(){
+        if (relay2x == 1 ){
+      relay2x=0;  
+      //document.getElementById('btRelay2').style="background-color:rgb(200, 220, 230)";
+      document.getElementById('btRelay2').style="background-color:rgb(230, 70, 70)";
+      console.log("doRelay2_OFF"); 
+      saveControlStatus();
+      setTimeout("doDelay2()",1000);  
+        }else{
+      relay2x=1;
+      document.getElementById('btRelay2').style="background-color:rgb(230, 70, 70)";
+      console.log("doRelay2_ON");
+      saveControlStatus();
+      setTimeout("doDelay2()",1000);
+        }
+      }
+
+      function DoRelay3(){
+        if (relay3x == 1 ){
+      relay3x=0;  
+      //document.getElementById('btRelay3').style="background-color:rgb(200, 220, 230)";
+      document.getElementById('btRelay3').style="background-color:rgb(230, 70, 70)";
+      console.log("doRelay3_OFF"); 
+      saveControlStatus();
+      setTimeout("doDelay3()",1000);  
+        }else{
+      relay3x=1;
+      document.getElementById('btRelay3').style="background-color:rgb(230, 70, 70)";
+      console.log("doRelay3_ON");
+      saveControlStatus();
+      setTimeout("doDelay3()",1000);
+        }
+      }
+
+      function DoRelay4(){
+        if (relay4x == 1 ){
+      relay4x=0;  
+      //document.getElementById('btRelay4').style="background-color:rgb(200, 220, 230)";
+      document.getElementById('btRelay4').style="background-color:rgb(230, 70, 70)";
+      console.log("doRelay4_OFF"); 
+      saveControlStatus(); 
+      setTimeout("doDelay4()",1000); 
+        }else{
+      relay4x=1;
+      document.getElementById('btRelay4').style="background-color:rgb(230, 70, 70)";
+      console.log("doRelay4_ON");
+      saveControlStatus();
+      setTimeout("doDelay4()",1000);
+        }
+      }
+
+      function doDelay1(){
+        document.getElementById('btRelay1').style="background-color:rgb(220, 200, 200)";
+        console.log("dodelay1=======");
+      }
+
+      function doDelay2(){
+        document.getElementById('btRelay2').style="background-color:rgb(220, 200, 200)";
+        console.log("dodelay2=======");
+      }
+
+      function doDelay3(){
+        document.getElementById('btRelay3').style="background-color:rgb(220, 200, 200)";
+        console.log("dodelay3=======");
+      }
+      function doDelay4(){
+        document.getElementById('btRelay4').style="background-color:rgb(220, 200, 200)";
+        console.log("dodelay4=======");
+      }
+
+
+      function getDataAllfromFeed(datperpage) {
+      const url="https://api.netpie.io/feed/MysensorData?apikey=a8EFtmKFWPKLIHqPFwKyJE2dlXM8AvlM&granularity=10seconds&since=5day&filter=ammo,flow,humi,light,temp"  
+      //const url = "https://api.netpie.io/feed/myFeedna?apikey=xhF4QYtyqQrpMKuLszoGV2RaTeaPfO3e&granularity=10seconds&since=10day&filter=temp,humid"; 
+      fetch(url).then(function(response) {
+      return response.json();
+      }).then(function(data) {
+      console.log("length1:====="+data.data[0].values.length);//ammo//temp(0)
+      console.log("length2:====="+data.data[1].values.length);//flow//humid(1)
+      console.log("length3:====="+data.data[2].values.length);//humid//ammo(2)
+      console.log("length4:====="+data.data[3].values.length);//light//light(3)
+      console.log("length5:====="+data.data[4].values.length);//temp//flow(4)
+      console.log("length6:====="+data.lastest_data[0].values.length);//timestamp
+      var len = data.data[0].values.length;
+      px1=[];
+      px2=[];
+      px3=[];
+      px4=[];
+      px5=[];
+      px6=[];
+      if (datperpage==20){
+          if (len > datperpage){
+            var remain =len % datperpage;
+            console.log("remain====>" + remain);
+            var addDat = datperpage - remain;
+            //console.log("addDat===> "+ addDat);
+            var pageQty = (len+addDat)/datperpage ;
+            //console.log("len===>"+ len);
+            console.log("page Qty ====> "+ pageQty);
+            for (i =0;i<datperpage;i++){
+              px1.push(data.data[0].values[i][1]);
+              px2.push(data.data[1].values[i][1]);
+              px3.push(data.data[2].values[i][1]);
+              px4.push(data.data[3].values[i][1]);
+              px5.push(data.data[4].values[i][1]);
+              px6.push(String(convert(data.data[1].values[i][0])));
+            }
+            for (i=remain;i<len;i++){
+              px1.push(data.data[0].values[i][1]);
+              px2.push(data.data[1].values[i][1]);
+              px3.push(data.data[2].values[i][1]);
+              px4.push(data.data[3].values[i][1]);
+              px5.push(data.data[4].values[i][1]);
+              px6.push(String(convert(data.data[1].values[i][0])));
+            }
+            var slimin=document.getElementById("mySli").min="1";
+            var slimax=document.getElementById("mySli").max=pageQty;
+            document.getElementById('mySli').value=pageQty;
+            slideMax = pageQty;
+            sliderChange(pageQty);
+            console.log("min="+slimin +":"+"max="+slimax);
+
+          }else{
+
+          }
+
+      } 
+      
+      if (datperpage ==100){
+        if (len > datperpage){
+            var remain =len % datperpage;
+            var addDat = datperpage - remain;
+            //console.log("addDat===> "+ addDat);
+            var pageQty = (len+addDat)/datperpage ;
+            //console.log("len===>"+ len);
+            for (i =0;i<datperpage;i++){
+              px1.push(data.data[0].values[i][1]);
+              px2.push(data.data[1].values[i][1]);
+              px3.push(data.data[2].values[i][1]);
+              px4.push(data.data[3].values[i][1]);
+              px5.push(data.data[4].values[i][1]);
+              px6.push(String(convert(data.data[1].values[i][0])));
+            }
+            for (i=remain;i<len;i++){
+              px1.push(data.data[0].values[i][1]);
+              px2.push(data.data[1].values[i][1]);
+              px3.push(data.data[2].values[i][1]);
+              px4.push(data.data[3].values[i][1]);
+              px5.push(data.data[4].values[i][1]);
+              px6.push(String(convert(data.data[1].values[i][0])));
+            }
+
+              var slimin=document.getElementById('mySli').min="1";
+              var slimax=document.getElementById('mySli').max=pageQty;
+              document.getElementById('mySli').value=pageQty;
+              slideMax = pageQty;
+              sliderChange(pageQty);
+              console.log("min="+slimin +":"+"max="+slimax);
+            }else{
+
+            }
+      }
+      if (datperpage==1000){
+        if (len > datperpage){
+            var remain =len % datperpage;
+            var addDat = datperpage - remain;
+            //console.log("addDat===> "+ addDat);
+            var pageQty = (len+addDat)/datperpage ;
+            //console.log("len===>"+ len);
+            for (i =0;i<datperpage;i++){
+              px1.push(data.data[0].values[i][1]);
+              px2.push(data.data[1].values[i][1]);
+              px3.push(data.data[2].values[i][1]);
+              px4.push(data.data[3].values[i][1]);
+              px5.push(data.data[4].values[i][1]);
+              px6.push(String(convert(data.data[1].values[i][0])));
+            }
+            for (i=remain;i<len;i++){
+              px1.push(data.data[0].values[i][1]);
+              px2.push(data.data[1].values[i][1]);
+              px3.push(data.data[2].values[i][1]);
+              px4.push(data.data[3].values[i][1]);
+              px5.push(data.data[4].values[i][1]);
+              px6.push(String(convert(data.data[1].values[i][0])));
+            }
+              var slimin=document.getElementById('mySli').min="1";
+              var slimax=document.getElementById('mySli').max=pageQty;
+              document.getElementById('mySli').value=pageQty;
+              slideMax = pageQty;
+              sliderChange(pageQty);
+              console.log("min="+slimin +":"+"max="+slimax);
+
+            }else{
+
+            }
+          }
+      
+      /* if (len > 0 ) {
+        for (var i = 0; i < len; i++) {
+        var xlabel = String(convert(data.data[0].values[i][0])); //Timeline
+        //console.log("data"+ i +":"+ xlabel);
+        px1.push(data.data[0].values[i][1]);
+        px2.push(data.data[1].values[i][1]);
+        px3.push(data.data[1].values[i][1]);
+        px4.push(data.data[1].values[i][1]);
+        px5.push(data.data[1].values[i][1]);
+        px6.push(xlabel);
+        //enlabels.push(xlabel);
+        //console.log("=========>"+arrLabel);
+      }
+      } */
+      });
+      }
+
+
+
+
+      function getChartDatafromFeed() {
+      const url="https://api.netpie.io/feed/MysensorData?apikey=a8EFtmKFWPKLIHqPFwKyJE2dlXM8AvlM&granularity=10seconds&since=5day&filter=ammo,flow,humi,light,temp"  
+      //const url = "https://api.netpie.io/feed/myFeedna?apikey=xhF4QYtyqQrpMKuLszoGV2RaTeaPfO3e&granularity=10seconds&since=10day&filter=temp,humid"; 
+      fetch(url).then(function(response) {
+      return response.json();
+      }).then(function(data) {
+      //console.log(data.data[0].values);
+      //console.log(data.data[1].values);
+      //arr1 = data.data[0].values[i][1];              
+////////////////////////////////////////////////////////////////////////
+      console.log("length1:"+data.data[0].values.length);
+      console.log("length2:"+data.data[1].values.length);
+      console.log("length3:"+data.data[2].values.length);
+      console.log("length4:"+data.data[3].values.length);
+      console.log("length5:"+data.data[4].values.length);
+      //-------------------------------------------------
+      console.log("length_lastest:"+data.lastest_data[0].values.length);
+      //console.log("length3:*************>>>>>>>>>"+data.data[2].values.length);
+      var snum1,snum2,snum3,snum4,snum5;
+      var dnum1,dnum2,dnum3,dnum4,dnum5;
+      var arrDat1 = [];
+      var arrDat2 = [];
+      var arrDat3 = [];
+      var arrDat4 = [];
+      var arrDat5 = [];
+      var arrLabel = [];
+      dnum1 = data.data[4].values.length;//Temp (4)
+      snum1 = data.data[4].values.length-20;
+      //console.log("num1 ===="+num1)
+      dnum2 = data.data[2].values.length;//Humid (2)
+      snum2 = data.data[2].values.length-20;
+      //console.log("num2 ===="+num2)
+      dnum3 = data.data[0].values.length;//Ammo (0)
+      snum3 = data.data[0].values.length-20;
+      //console.log("num3 ===="+num3)
+      dnum4 = data.data[3].values.length;//Light (3)
+      snum4 = data.data[3].values.length-20;
+      //console.log("num4 ===="+num4)
+      dnum5 = data.data[1].values.length;//Flow (1)
+      snum5 = data.data[1].values.length-20;
+      //console.log("num5 ===="+num5)
+
+      if (dnum1 >=20) {
+        //console.log("num1>20  <================"+ snum1);
+        //console.log("num1-20 ====> "+ (num1-20));
+        for (i = snum1; i < dnum1; i++) {
+        //console.log("....................."+data.data[4].values[i][0]);//all data 
+        var xlabel = String(convert(data.data[4].values[i][0])); //Timeline
+        //console.log("dataxlabel *******"+ i +":"+ xlabel);
+        arrLabel.push(xlabel);
+        //enlabels.push(xlabel);
+        //console.log("=========>"+arrLabel);
+        //arrDat1.push(data.data[4].values[i][1]);
+        //arrDat2.push(data.data[2].values[i][1]);
+        //arrDat3.push(data.data[0].values[i][1]);
+        //arrDat4.push(data.data[3].values[i][1]);
+        //arrDat5.push(data.data[1].values[i][1]);
+      }
+
+       for (i = snum1; i < dnum1; i++) {
+        arrDat1.push(data.data[4].values[i][1]);
+        //console.log("%%%%%%%%1>"+ data.data[4].values[i][1]);
+      }
+      //console.log("%%%%%%%%1>"+arrDat1);
+      for (i = snum2; i < dnum2; i++) {
+        arrDat2.push(data.data[2].values[i][1]);
+      }
+      for (i = snum3; i < dnum3; i++) {
+        arrDat3.push(data.data[0].values[i][1]);
+      }
+      for (i = snum4; i < dnum4; i++) {
+        arrDat4.push(data.data[3].values[i][1]);
+      }
+      for (i = snum5; i < dnum5; i++) {
+        arrDat5.push(data.data[1].values[i][1]);
+      } 
+      //console.log("%%%%%%%%2>"+arrDat2);
+      }
+      
+      //document.getElementById('boxShowTemp').innerHTML = data.data[0].values[num1-1][1] ;
+      //console.log("********"+ document.getElementById('dtTemp').value)
+      //console.log(data.data[0].values[num1-1][1]);
+      //document.getElementById('boxShowHumid').innerHTML = data.data[1].values[num2-1][1];
+      //console.log(data.data[1].values[num2-1][1]);
+/////////////////////////////////////////////////////////////////                   
+      //console.log(data.data[0].values.length);
+      //console.log(sum);
+      //console.log(data.data[1].values);    
+
+      //document.getElementById('boxShowTemp').value = data.lastest_data[0].values[0][1];       
+      //document.getElementById('boxShowHumid').value = data.lastest_data[1].values[0][1];
+      //-----------------------------------------------------------
+      document.getElementById('boxShowTemp').value=data.lastest_data[4].values[0][1]; //[0]
+      document.getElementById('boxShowHumid').value=data.lastest_data[2].values[0][1];//[1]
+      document.getElementById('boxShowAmmo').value=data.lastest_data[0].values[0][1];//[2]
+      document.getElementById('boxShowLight').value=data.lastest_data[3].values[0][1];//[3]
+      document.getElementById('boxShowFlow').value=data.lastest_data[1].values[0][1];//[4]
+      var myTemp = data.lastest_data[4].values[0][1]; //[0]
+      console.log("myTemp:"+myTemp);
+      var myHumid = data.lastest_data[2].values[0][1];//[1]
+      console.log("myHumid:"+myHumid);
+      var thiDat=myTHI(myTemp,myHumid);
+      console.log("thi:"+thiDat);
+      //-----------------------------------------------------------
+      var v1timNow = String(convert(data.lastest_data[0].values[0][0]));
+      //var v1timNow = String(convert(v1-7*60*60)); 
+        //var v1timNow = new Date(v1*1000-(7*60*60*1000));
+        console.log(v1timNow);
+        document.getElementById('lastUpdate').innerHTML=v1timNow;
+
+      //-----------------------------------------------------------
+      if (isbtNow==true){
+        BuildChart(arrLabel,arrDat1,arrDat2,arrDat3,arrDat4,arrDat5);
+      }
+      //BuildChart(arrLabel,arrDat1,arrDat2,arrDat1,arrDat2,arrDat2);
+      }).catch(function() {
+      alert("Data error");  
+      console.log("Booo");
+      });
+     }
+
+
+
+
+     function myTHI(pTemp,RH){
+  var thi= (1.8*pTemp+32)-(0.55-0.0055*RH)*(1.8*pTemp-26);
+  console.log("calculateOfTHI:"+thi);
+  var mythi =Math.floor(thi + 0.5);
+  if (thi < 68) {
+    document.getElementById("infoTHI").innerHTML="No Stress"
+  }else if (thi<72){
+    document.getElementById("infoTHI").innerHTML="Stress threshold"
+  }else if (thi<80){
+    document.getElementById("infoTHI").innerHTML="Mild Stress"
+  }else if (thi<90){
+    document.getElementById("infoTHI").innerHTML="Moderate Stress"
+  }else{
+    document.getElementById("infoTHI").innerHTML="Severe Stress"
+  }
+  //var mythi = thi.toFixed(2);
+  console.log("round:"+mythi);
+  document.getElementById('boxShowTHI').value = mythi;
+  gaugeUpdate(mythi);
+  return mythi;
+}
+
+function gaugeUpdate(thiDat){
+                    document.getElementById("gauge2").innerHTML="";
+                    Gauge(document.getElementById("gauge2"),
+                    { 
+                    min: 0,
+                    max: 100,
+                    dialStartAngle: 180,
+                    dialEndAngle: 0,
+                    value: thiDat,
+                    viewBox: "0 0 100 57",
+                    color: function(value) {
+                    if(value < 68) {
+                     return "blue";//green
+                    }else if(value < 72) {
+                     return "green";//
+                     }else if(value < 80) {
+                     return "yellow";//orange
+                     }else if(value < 90) {
+                     return "orange";//red
+                     }else {
+                     return "red";//red
+            }
+          }
+        }
+                    );
+                }
+
+
+
+                function gomyTHI(pTemp,RH){
+  var thi= (1.8*pTemp+32)-(0.55-0.0055*RH)*(1.8*pTemp-26);
+  console.log("gocalculateOfTHI:"+thi);
+  var mythi =Math.floor(thi + 0.5);
+  if (thi < 68) {
+    document.getElementById("goinfoTHI").innerHTML="No Stress"
+  }else if (thi<72){
+    document.getElementById("goinfoTHI").innerHTML="Stress threshold"
+  }else if (thi<80){
+    document.getElementById("goinfoTHI").innerHTML="Mild Stress"
+  }else if (thi<90){
+    document.getElementById("goinfoTHI").innerHTML="Moderate Stress"
+  }else{
+    document.getElementById("goinfoTHI").innerHTML="Severe Stress"
+  }
+  //var mythi = thi.toFixed(2);
+  //console.log("round:"+mythi);
+  document.getElementById('goTHI').value = mythi;
+  //gogaugeUpdate(mythi);
+  return mythi;
+}
+
+
+
+      function convert(unixtimestamp){
+
+      // Unixtimestamp
+      //var unixtimestamp = document.getElementById('timestamp').value;
+      //console.log(unixtimestamp);
+      // Months array
+      var months_arr = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      // Convert timestamp to milliseconds
+      var date = new Date(unixtimestamp);
+      //console.log("vv"+ date);
+      // Year
+      var year = date.getFullYear();
+      //console.log(year);
+      // Month
+      var month = months_arr[date.getMonth()];
+      //console.log(month);
+      // Day
+      var day = date.getDate();
+      //console.log(day);
+      // Hours
+      var hours = date.getHours();
+      //console.log(hours);
+      // Minutes
+      var minutes = "0" + date.getMinutes();
+      //console.log(minutes);
+      // Seconds
+      var seconds = "0" + date.getSeconds();
+      //console.log(seconds);
+      // Display date time in MM-dd-yyyy h:m:s format
+      var convdataTime = month+'-'+day+'-'+year+' '+hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+      //document.getElementById('datetime').innerHTML = convdataTime;
+      //console.log("xxx"+ convdataTime);
+      return convdataTime;
+    }
+    // function myFunction() {
+    //   alert("ready");
+    //   const url = "https://api.netpie.io/feed/myFeedna?apikey=xhF4QYtyqQrpMKuLszoGV2RaTeaPfO3e&granularity=10seconds&since=24hours&filter=temp,humid";
+    //   async function fetchAsync (url) {
+    //   let response = await fetch(url);
+    //   let data = await response.json();
+    //   console.log("ready");
+    //   return data; 
+    //}
+    //}
+  </script>
+
+  <script> const APPID = "EVapIOTRmutl";//"myNBIoT"; // แทนที่ด้วย AppID 
+    const KEY = "YCCF8vLIEYO80eI"//"FthZ8gk1xiTFdYs"; // แทนที่ด้วย Key 
+    const SECRET ="LhywMD1z0Y8NriiOvWv1B059s"// "k2Q8TpM76DEMKsObJ12iD2jfS"; // แทนที่ด้วย Secret
+    const ALIAS = "myWeb"; // ตั้งชื่อเรียกอุปกรณ์ (อย่างไรก็ได้ไม่จากัด)
+    
+    var microgear = Microgear.create({ key: KEY, secret: SECRET,alias : ALIAS });
+    console.log("microgear created  ************************");
+    // สร้างฟังก์ชั่นที่จะตอบสนองต่อข้อความที่เข้ามา 
+    // function mySetting() {
+    //   minTemp = minTempx;
+    //   maxTemp = maxTempx;
+    //   minHumid = minHumidx;
+    //   maxHumid = maxHumidx;
+    //   minAmmo = minAmmox;
+    //   maxAmmo = maxAmmox;
+    //   minLight = minLightx;
+    //   maxLight = maxLightx;
+    //   microgear.publish("/limit/temp/min", minTemp);
+    //   console.log(minTemp);
+    //   microgear.publish("/limit/temp/max", maxTemp);
+    //   console.log(maxTemp);
+    //   microgear.publish("/limit/humid/min", minHumid);
+    //   console.log(minHumid);
+    //   microgear.publish("/limit/humid/max", maxHumid);
+    //   console.log(maxHumid);
+    //   microgear.publish("/limit/ammo/min", minAmmo);
+    //   console.log(minAmmo);
+    //   microgear.publish("/limit/ammo/max", maxAmmo);
+    //   console.log(maxAmmo);
+    //   microgear.publish("/limit/light/min", minLight);
+    //   console.log(minLight);
+    //   microgear.publish("/limit/light/max", maxLight);
+    //   console.log(maxLight);
+    //   console.log("sending");
+    // }
+    function btCancel() {
+      isLimit = false;
+      callLimitData();
+      //document.getElementById('boxminTemp').value = minTempx;
+      //document.getElementById('boxmaxTemp').value = maxTempx;
+      //document.getElementById('boxminHumid').value = minHumidx;
+      //document.getElementById('boxmaxHumid').value = maxHumidx;
+      //document.getElementById('boxminAmmo').value = minAmmox;
+      //document.getElementById('boxmaxAmmo').value = maxAmmox;
+      //document.getElementById('boxminLight').value = minLightx;
+      //document.getElementById('boxmaxLight').value = maxLightx;
+      //refresh this page again
+      btDisable();
+    }
+
+    function btDisable(){
+      document.getElementById('btMinDnTemp').setAttribute("disabled","disabled");
+      document.getElementById('btMinUpTemp').setAttribute("disabled","disabled");
+      document.getElementById('btMaxDnTemp').setAttribute("disabled","disabled");
+      document.getElementById('btMaxUpTemp').setAttribute("disabled","disabled");
+      document.getElementById('btMinDnHumid').setAttribute("disabled","disabled");
+      document.getElementById('btMinUpHumid').setAttribute("disabled","disabled");
+      document.getElementById('btMaxDnHumid').setAttribute("disabled","disabled");
+      document.getElementById('btMaxUpHumid').setAttribute("disabled","disabled");
+      document.getElementById('btMinDnAmmo').setAttribute("disabled","disabled");
+      document.getElementById('btMinUpAmmo').setAttribute("disabled","disabled");
+      document.getElementById('btMaxDnAmmo').setAttribute("disabled","disabled");
+      document.getElementById('btMaxUpAmmo').setAttribute("disabled","disabled");
+      document.getElementById('btMinDnLight').setAttribute("disabled","disabled");
+      document.getElementById('btMinUpLight').setAttribute("disabled","disabled");
+      document.getElementById('btMaxDnLight').setAttribute("disabled","disabled");
+      document.getElementById('btMaxUpLight').setAttribute("disabled","disabled");
+      document.getElementById('btSet').setAttribute("disabled","disabled");
+    }
+    function btEdit(){
+      //document.getElementsByName('btLoLight').setAttribute("disabled","disabled");
+      document.getElementById('btMinDnTemp').removeAttribute("disabled");
+      document.getElementById('btMinUpTemp').removeAttribute("disabled");
+      document.getElementById('btMaxDnTemp').removeAttribute("disabled");
+      document.getElementById('btMaxUpTemp').removeAttribute("disabled");
+      document.getElementById('btMinDnHumid').removeAttribute("disabled");
+      document.getElementById('btMinUpHumid').removeAttribute("disabled");
+      document.getElementById('btMaxDnHumid').removeAttribute("disabled");
+      document.getElementById('btMaxUpHumid').removeAttribute("disabled");
+      document.getElementById('btMinDnAmmo').removeAttribute("disabled");
+      document.getElementById('btMinUpAmmo').removeAttribute("disabled");
+      document.getElementById('btMaxDnAmmo').removeAttribute("disabled");
+      document.getElementById('btMaxUpAmmo').removeAttribute("disabled");
+      document.getElementById('btMinDnLight').removeAttribute("disabled");
+      document.getElementById('btMinUpLight').removeAttribute("disabled");
+      document.getElementById('btMaxDnLight').removeAttribute("disabled");
+      document.getElementById('btMaxUpLight').removeAttribute("disabled");
+    }
+    //microgear.publish("/limit/humid", minHumid +":"+ maxHumid);
+    //microgear.publish("/limit/temp", minTemp +":"+ maxTemp);
+    //console.log(minHumid +"and" + maxHumid);
+    microgear.on('message', function(topic,msg) { 
+    //ในที่นี้เราจะเอาข้อความไปแทนข้อความของ HTML element ชื่อ data 
+    console.log("MICROGEAR ON ==============>   "+topic+" <:> "+msg);
+    var msgtopic = topic.split("/");
+    var msgi = msg.split(",");
+
+    console.log("========>>>>>>>>>>>>>   "+msgi.length);
+    console.log("========>>>>>>>>>>>>>   "+msgtopic[2]);
+    console.log("========>>>>>>>>>>>>>   "+msgi[0]);
+    
+
+    if (msgtopic[msgtopic.length-1]=="limit"){
+      console.log("message incomming ---- limit ---- " + msgtopic[msgtopic.length-1] +":"+msgi.length );
+        
+      if (msgi.length == 8){
+        console.log("limit length ====" + msgi.length);
+        ES8266minTemp = msgi[0]; 
+        //document.getElementById("boxminTemp").value=ES8266minTemp;
+        ES8266maxTemp = msgi[1];
+        //document.getElementById("boxmaxTemp").value=ES8266maxTemp;
+        ES8266minHumid = msgi[2];
+        //document.getElementById("boxminHumid").value=ES8266minHumid;
+        ES8266maxHumid = msgi[3];
+        //document.getElementById("boxmaxHumid").value=ES8266maxHumid;
+        ES8266minAmmo = msgi[4];
+        //document.getElementById("boxminAmmo").value=ES8266minAmmo;
+        ES8266maxAmmo = msgi[5];
+        //document.getElementById("boxmaxAmmo").value=ES8266maxAmmo;
+        ES8266minLight = msgi[6];
+        //document.getElementById("boxminLight").value=ES8266minLight; 
+        ES8266maxLight = msgi[7];
+        //document.getElementById("boxmaxLight").value=ES8266maxLight;
+        isLimit = true;
+        gotData();
+      }
+
+    }
+    if (msgtopic[msgtopic.length-1]=="Led"){
+      console.log("message incomming ---- Led ---- " + msgtopic[msgtopic.length-1] +":"+msgi.length );
+    if (msgi.length == 4){
+        console.log("Led length ====" + msgi.length);
+        led1x = msgi[0]; 
+        //document.getElementById("boxminTemp").value=ES8266minTemp;
+        led2x = msgi[1];
+        //document.getElementById("boxmaxTemp").value=ES8266maxTemp;
+        led3x = msgi[2];
+        //document.getElementById("boxminHumid").value=ES8266minHumid;
+        led4x = msgi[3];
+        //document.getElementById("boxmaxHumid").value=ES8266maxHumid;
+        isLed = true;
+        setLedStatus();
+      }
+    }
+    if (msgtopic[msgtopic.length-1]=="automode"){
+      console.log("message incomming ---- automode ---- " + msgtopic[msgtopic.length-1] +":"+msgi[0] );
+    if (msgi.length == 1){
+        console.log("automode length ====" + msgi.length);
+        automanux = msgi[0]; 
+        //document.getElementById("boxminTemp").value=ES8266minTemp;
+        //isLed = true;
+        //setLedStatus();
+        DoAutoManu();
+      }
+    }
+    
+    
+    
+    
+    
+    //document.getElementById("boxminTemp").value=msgi[1];
+    //microgear.chat("myxxx","min:"+msgi[1]);
+    //microgear.publish("/limit/tempmax",msgi[1]);
+    //console.log("=====update for ========= "+msgi[1]);
+    //nowtempmax = msgi[1];
+    //microgear.chat("/myNBIoT/limit/temp/max",39);
+     //----------------------------------------------------------------------------------------
+    //datasources["WarRoom"]["/EVapIOTRmutl/gearname/WarRoom/dafult"].split(",")[0]
+    //-----------------------------------------------------------------------------------------
+
+    
+    document.getElementById("data").innerHTML = msg; });
+    // สร้างฟังก์ชั่นที่จะถูกเรียกเมื่อเชื่อมต่อ NETPIE สาเร็จ 
+    
+    microgear.on('connected', function() { 
+    microgear.setAlias(ALIAS); // ตั้งชื่อเรียกให้กับอุปกรณ์ตามตัวแปรที่ตั้งไว้ส่วนต้นของไฟล์
+    // แสดงข้อความให้ทราบว่าเชื่อมต่อสาเร็จ 
+    //document.getElementById("data").innerHTML = "Now I am connected with netpie...";
+    // ตั้งค่า timer ให้ทางานทุก 1 วินาที (ตัวเลข 1000 มีหน่วยเป็น ms หมายถึง 1000 ms) 
+    // setInterval(function() { // ส่งข้อความไปยังอุปกรณ์ที่มีชื่อตามตัวแปร ALIAS ซึ่งก็คือตัวเอง 
+    // var temp = Math.floor((Math.random()*100)+1);
+    // var humid = Math.floor((Math.random()*100)+1)
+    microgear.subscribe("/limit");
+    microgear.subscribe("/Led");
+    microgear.subscribe("/automode");
+    //microgear.subscribe("/#");
+    console.log("microgear subscribe  ************************");
+    
+    if (isLimit==false){
+      microgear.chat("ESP8266","?");
+      console.log("microgear chat  ************************");
+    }
+    //if (isLed==false){
+    //  microgear.chat("ESP8266","?");
+    //  console.log("microgear chat  ************************");
+    //}
+   
+    //console.log("microgear chat  ************************");
+    //microgear.subscribe("/#");
+    // microgear.writeFeed("myFeedna","temp:"+ temp +",humid:"+ humid);
+    // microgear.publish("/web/temp", temp
+    // microgear.publish("/web/humid", humid);
+    //microgear.publish("/limit/setting/",data);
+    //microgear.publish("/limit/setting","aaaaasssdddd");
+    // console.log("connect ++++++++++++++++++++++");
+    //getChartDatafromFeed();
+    //microgear.chat(ALIAS,"Hello from myself at "+Date.now()); 
+    //},15000); 
+    });
+    microgear.connect(APPID); // สร้างการเชื่อมต่อไปยัง NETPIE
+
+
+    setInterval(function() { // ส่งข้อความไปยังอุปกรณ์ที่มีชื่อตามตัวแปร ALIAS ซึ่งก็คือตัวเอง 
+    //getDataAllfromFeed();
+    console.log("getchartdatafromfeed------->");
+    getChartDatafromFeed();
+    //gotLedStatus();
+    },15000); 
+    
+</script>
+    <ons-page>
+        <ons-toolbar>
+          <div class="center" >SMART FARM</div>
+        </ons-toolbar>
+        <ons-tabbar>
+          <ons-tab page="tab1.html" label="Setting" icon="md-settings" active-icon="md-settings">
+          </ons-tab>
+          <ons-tab page="tab2.html" label="Report" onclick= "btDisable()" icon="fa-file"  active>
+          </ons-tab>
+        </ons-tabbar>
+    </ons-page>    
+    <template id="tab1.html" >   
+      <ons-page id="Tab1">
+          <p style="text-align: center;">
+
+              <script>
+               //callLimitData();
+               getChartDatafromFeed();
+               //callControlStatus();
+               //callLedStatus();
+               //callFeedDataAll();
+               chartNow();
+             </script>  
+            <form >
+                <div style="text-align:center; widows: 100%; padding:0;">
+                    <p ><strong>REMOTE CONTROL</strong></p>  
+                    <input type ="button" class="button" id = "btAutoManu" onclick= "chatAutoManu()" value="AUTO"><br> 
+                  </div>
+                  <div style="text-align:center; widows: 100%; padding:0;">   
+                    
+                    <p ><strong></strong></p>
+                    <table align="center" width ='92%'>
+                        <tr>
+                          <th><span id="ledNo1" class="dot"></span></th>
+                          <th><span id="ledNo2" class="dot"></span></th>
+                          <th><span id="ledNo3" class="dot"></span></th>
+                          <th><span id="ledNo4" class="dot"></span></th>
+                        </tr>
+                    </table>
+                    <input type="button" class= "button buttonRelayOff" id = "btRelay1" onclick= "chatRelay1()" value ="SENSOR" disabled>
+                    <input type ="button" class="button buttonRelayOff" id = "btRelay2" onclick= "chatRelay2()" value="FAN" disabled> 
+                    <input type="button" class="button buttonRelayOff" id = "btRelay3" onclick= "chatRelay3()" value ="PUMP" disabled>
+                    <input type="button" class="button buttonRelayOff" id = "btRelay4" onclick= "chatRelay4()" value ="LIGHT" disabled>
+                  </div>
+                  
+
+
+
+            <div style="text-align:center; widows: 100%; padding:0;">
+                <p ><strong>Temperature (C) :</strong></p>  
+                MIN :   
+                <input type ="text" id="boxminTemp" size = "4" font-weight="bold"  readonly> 
+                <input type ="button" class="button" id = "btMinDnTemp" onclick= "btMinTempDec()" value="DEC" disabled> 
+                <input type="button" class="button" id = "btMinUpTemp" onclick= "btMinTempInc()" value ="INC" disabled>
+            </div>
+            <div style="text-align:center; widows: 100%; padding:0;">
+              MAX :   
+              <input type ="text" id="boxmaxTemp" size = "4" font-weight="bold" readonly> 
+              <input type ="button" class="button" id= "btMaxDnTemp"onclick= "btMaxTempDec()" value="DEC" disabled>
+              <input type="button" class="button" id= "btMaxUpTemp"onclick= "btMaxTempInc()" value ="INC" disabled>
+            </div>
+            <div style="text-align:center; widows: 100%; padding:0;">
+              <p ><strong>Humidity (%) :</strong></p> 
+                MIN :   
+                <input type ="text" id="boxminHumid" size = "4" font-weight="bold" readonly> 
+                <input type ="button" class="button" id= "btMinDnHumid"onclick= "btMinHumidDec()" value="DEC"disabled>
+                <input type="button" class="button" id= "btMinUpHumid"onclick= "btMinHumidInc()" value ="INC"disabled>
+            </div>
+            <div style="text-align:center; widows: 100%; padding:0;">
+              MAX :   
+              <input type ="text" id="boxmaxHumid" size = "4" font-weight="bold" readonly> 
+              <input type ="button" class="button" id= "btMaxDnHumid"onclick= "btMaxHumidDec()" value="DEC"disabled>
+              <input type="button" class="button" id= "btMaxUpHumid"onclick= "btMaxHumidInc()" value ="INC"disabled>
+            </div>
+            <div style="text-align:center; widows: 100%; padding:0;">
+              <p ><strong>Ammonia (ppm) :</strong></p> 
+              MIN :   
+              <input type ="text" id="boxminAmmo" size = "4" font-weight="bold" readonly> 
+              <input type ="button" class="button" id= "btMinDnAmmo"onclick= "btMinAmmoDec()" value="DEC"disabled>
+              <input type="button" class="button" id= "btMinUpAmmo"onclick= "btMinAmmoInc()" value ="INC"disabled>
+          </div>
+          <div style="text-align:center; widows: 100%; padding:0;">
+            MAX :   
+            <input type ="text" id="boxmaxAmmo" size = "4" font-weight="bold" readonly> 
+            <input type ="button" class="button" id= "btMaxDnAmmo"onclick= "btMaxAmmoDec()" value="DEC"disabled>
+            <input type="button" class="button" id= "btMaxUpAmmo"onclick= "btMaxAmmoInc()" value ="INC"disabled>
+
+          </div>  
+            <div style="text-align:center; widows: 100%; padding:0;">
+              <p ><strong>Light Intensity(lx) :</strong></p>  
+              MIN :   
+              <input type ="text" id="boxminLight" size = "4" font-weight="bold" readonly> 
+              <input type ="button" class="button"id= "btMinDnLight" onclick= "btMinLightDec()" value="DEC"disabled>
+              <input type="button" class="button" id= "btMinUpLight"onclick= "btMinLightInc()" value ="INC"disabled>
+
+          </div>
+          <div style="text-align:center; widows: 100%; padding:0;">
+            MAX :   
+            <input type ="text" id="boxmaxLight" size = "4" font-weight="bold" readonly> 
+            <input type ="button" class="button" id= "btMaxDnLight" onclick= "btMaxLightDec()" value="DEC"disabled>
+            <input type="button" class="button" id ="btMaxUpLight" onclick= "btMaxLightInc()" value ="INC"disabled>
+
+          </div>
+          <div style="text-align:center; widows: 100%; padding:0;"><br><br>
+              <input type="button" class = "button" id ="btSet"onclick= "saveLimitData()" value="SET" disabled>
+              <input type="button" class="button" onclick= "btEdit()" value ="EDIT"> 
+              <input type="button" class = "button" onclick= "btCancel()" value="CANCEL">
+          </div>
+          </form>
+      </p>       
+    </ons-page>
+  </template>
+          
+  <template id="tab2.html">
+    <ons-page id="Tab2">
+      <p style="text-align: center;">
+              <h3 align ="center" id="clockTab2"></h3>   
+              <div class="card" >
+                  <p align ="center">Update:<span id = "lastUpdate"></span></p>
+                  <table align="center">
+                      <tr>
+                        <th style="text-align: center;">Temp(C)</th>
+                        <th style="text-align: center;">THI</th>
+                        <th style="text-align: center;">Humid(%)</th>
+                      </tr>
+                      <tr>
+                        <td id="showTemp" ><input align="center" type ="text" id="boxShowTemp"> </td>
+                        <td id="showTHI"><input align="center" type ="text" id="boxShowTHI"> </td>
+                        <td id="showHumid"><input align="center" type ="text" id="boxShowHumid"> </td>
+                      </tr>
+                    </table><br>
+                    <table align="center">
+                      <tr>
+                        <th style="text-align: center;">Ammo(ppm)</th>
+                        <th style="text-align: center;">Light(lx)</th>
+                        <th style="text-align: center;">Flow(km/h)</th>
+                      </tr>
+                      <tr>
+                        <td id="showAmmo" ><input align="center"type ="text" id="boxShowAmmo"> </td>
+                        <td id="showLight"><input align="center"type ="text" id="boxShowLight"> </td>
+                        <td id="showFlow"><input align="center"type ="text" id="boxShowFlow"> </td>
+                        
+                      </tr>
+                    </table>
+                  <div id="gauge2" class="gauge-container two"></div>
+                  <h5 align ="center">THI:<span id = "infoTHI"></span></h5>
+              </div>
+              
+              
+
+             
+
+
+
+              <!-- <h5 id = "infoTHI" align ="center"></h5> -->
+              <p align ="center" >History:<span id="goDate"></span></p>
+              <h5 align ="center">THI:<span id = "goinfoTHI"></span></h5>
+              <table align="center">
+                  <tr>
+                    <th>Temp(C)</th>
+                    <th>THI</th>
+                    <th>Humid(%)</th>
+                  </tr>
+                  <tr>
+                    <td ><input align="center" type ="text" id="goTemp"> </td>
+                    <td ><input align="center" type ="text" id="goTHI"> </td>
+                    <td ><input align="center" type ="text" id="goHumid"> </td>
+                  </tr>
+                  </table>
+                  <table align="center">
+                      <tr>
+                        <th>Ammo(ppm)</th>
+                        <th>Light(lx)</th>
+                        <th>Flow(km/h)</th>
+                      </tr>
+                      <tr>
+                        <td ><input align="center"type ="text" id="goAmmo"> </td>
+                        <td ><input align="center"type ="text" id="goLight"> </td>
+                        <td ><input align="center"type ="text" id="goFlow"> </td>
+                        
+                      </tr>
+                      </table>
+              <div align="center"> 
+                  <input type="button" class = "button" onclick= "set1000()" value="1000" id="bt1000">
+                  <input type="button" class = "button" onclick= "set100()" value="100" id="bt100">
+                  <input type="button" class = "button" onclick= "set20()" value="20" id="bt20">
+                  <input type="button" class = "button" onclick= "chartNow()" value="Now" id="btNow"><br>
+              </div>
+
+                      </div>
+                  <div class="card">
+                      <div>
+                          <canvas id="myChart" height=600 width=600 ></canvas>
+                      </div>
+                      <div class="slidecontainer" align="center">
+                        <p id= "sliDat" align="right"></p>
+                        <input type="range"  align ="center" min="1" max="100" value="50" step="1" class="slider" id="mySli" oninput="sliderChange(this.value)" disabled>
+                        <p></p>
+                        <input type="button" class = "buttonc" onclick= "rev2()" value="<<" id="rev2">
+                        <input type="button" class = "buttonc" onclick= "rev1()" value="< " id="rev1">
+                        <input type="button" class = "buttonc" onclick= "fwd1()" value="> " id="fwd1">
+                        <input type="button" class = "buttonc" onclick= "fwd2()" value=">>" id="fwd2"><br>
+                        <script>
+                          // var slider = document.getElementById('slider');
+                          // slider.addEventListener('input', sliderChange);
+
+                          function sliderChange(sliVal) {
+                            console.log("value slide =====> "+sliVal);
+                            document.getElementById('sliDat').innerHTML=sliVal +"/"+ slideMax;
+                            slideNow = sliVal;
+                            chartSli(sliVal);
+
+                           }
+                      
+                          function rev2(){
+                            if (slideNow >10) {
+                              console.log("rev2===slideNow: "+ slideNow);
+                              sliderChange(slideNow-10)
+                              document.getElementById('mySli').value=slideNow-10;
+                              //chartSli(slideNow-10);
+                            }
+                          }
+
+                          function rev1(){
+                            if (slideNow > 1){
+                              console.log("rev1===slideNow: "+ slideNow);
+                              sliderChange(slideNow-1)
+                              document.getElementById('mySli').value=slideNow-1;
+                              //chartSli(slideNow-1);
+                            }
+                          }
+
+                          function fwd1(){
+                            if (slideNow < slideMax){
+                              console.log("fwd1===slideNow: "+ slideNow);
+                              sliderChange(parseInt(slideNow)+ 1);
+                              document.getElementById('mySli').value=parseInt(slideNow)+ 1;
+                              //chartSli(slideNow+1);
+                            }
+                          }
+
+                          function fwd2(){
+                            if (slideNow < slideMax-10){
+                              console.log("fwd2===slideNow: "+ slideNow);
+                              sliderChange(parseInt(slideNow)+10)
+                              document.getElementById('mySli').value=parseInt(slideNow)+ 10;
+                              //chartSli(slidNow+10);
+                            }
+                          }
+                      
+                        </script>
+                  
+                </div>
+                <script>
+                  //function BuildChart(enlabels,values1,values2,values3,values4,values5){
+               
+               var values1=[];
+               var values2=[];
+               var values3=[];
+               var values4=[];
+               var values5=[];
+               ///////////////////////////////////
+               var rectangleSet = false;
+               var istemp=false;
+               var ishumid=false;
+               var sel_temp;
+               var sel_humid;
+               var enlabels=[];
+             //console.log("builChart entry ============================" );
+             // var canvasx = document.getElementById("myChart");
+             // var ctxx = canvasx.getContext("2d");
+             // ctxx.clearRect(0, 0, canvasx.width, canvasx.height);
+             var ctx = document.getElementById('myChart').getContext('2d');
+             //var xlabels = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24"]
+             var chart = new Chart(ctx, {
+             // The type of chart we want to create
+             type: 'line',
+             // The data for our dataset
+             data: {
+               labels: enlabels,
+               datasets: [{
+               label: 'Temp',
+               fill:false,
+               backgroundColor: 'red',
+               yAxisID:"yAxis0",
+               //borderColor: 'rgb(0, 0, 200)',
+               //data: [1566054048819, 90]
+               data: values1
+             },{
+               label: 'Humid',
+               fill:false,
+               backgroundColor: 'blue',
+               yAxisID:"yAxis0",
+               //borderColor: 'rgb(200, 0, 0)',
+               //data: [0, 10, 5, 2, 20, 30, 45]
+               data: values2
+             },{
+               label: 'Ammonia',
+               fill:false,
+               backgroundColor: 'pink',
+               yAxisID:"yAxis0",
+               //borderColor: 'rgb(200, 0, 0)',
+               //data: [0, 10, 5, 2, 20, 30, 45]
+               data: values3
+             },{
+               label: 'Light',
+               fill:false,
+               backgroundColor: 'green',
+               yAxisID:"yAxis1",
+               //borderColor: 'rgb(200, 0, 0)',
+               //data: [0, 10, 5, 2, 20, 30, 45]
+               data: values4
+             },{
+               label: 'Flow',
+               fill:false,
+               backgroundColor: 'yellow',
+               yAxisID:"yAxis0",
+               //borderColor: 'rgb(200, 0, 0)',
+               //data: [0, 10, 5, 2, 20, 30, 45]
+               data: values5
+             }
+           ]
+},
+
+// Configuration options go here
+options: {
+ scales: {
+   yAxes: [{position:"left",
+           display:true,
+           id:"yAxis0",
+           ticks:{beginAtZero:true,
+           min:0,
+           max:100,
+           stepSize:10,
+           }},
+           {position:"right",
+           display:true,
+           id:"yAxis1",
+           ticks:{beginAtZero:true,
+           min:0,
+           max:2000,
+           stepSize:200}}]
+   },
+ legend:{display:true,
+     labels:{
+     boxWidth:10
+     }
+       },
+ tooltips: {
+   mode: 'index',
+   responsive: true,
+   maintainAspectRatio: false,
+   
+   
+  callbacks:{
+       label:function(tooltipItem, data) {
+           var lab=tooltipItem.xLabel;
+           console.log("mylabel:"+lab);
+          document.getElementById('goDate').innerHTML = lab ;
+         switch (parseInt(tooltipItem.datasetIndex)+1){
+         case 1:{
+           console.log("1:"+tooltipItem.value);
+           var val=parseFloat(tooltipItem.value).toFixed(2);
+           yyy= document.getElementById('goTemp').value = val ;
+           istemp=true;
+           sel_temp=yyy;
+          }
+         case 2:{
+           console.log("2:"+tooltipItem.value);
+           var val=parseFloat(tooltipItem.value).toFixed(2);
+           yyy=document.getElementById('goHumid').value = val ; 
+           ishumid=true;
+           sel_humid=yyy;
+         }
+         case 3:{
+           var val=parseFloat(tooltipItem.value).toFixed(2);
+           yyy=document.getElementById('goAmmo').value = val ;
+           console.log("3:"+tooltipItem.value);
+         }
+         case 4:{
+           var val=parseFloat(tooltipItem.value).toFixed(2);  
+           yyy=document.getElementById('goLight').value = val ;
+           console.log("4:"+tooltipItem.value);
+         }
+         case 5:{
+           var val=parseFloat(tooltipItem.value).toFixed(2);
+           yyy=document.getElementById('goFlow').value = val;
+           console.log("5:"+tooltipItem.value);
+         }
+       }
+       if (istemp && ishumid){
+         var ans_thi=gomyTHI(sel_temp,sel_humid);
+          return yyy
+       }
+     }
+ //event:['click']
+   // intersect:true,
+   // enable:false,
+   // custom:function(model){
+   //   const tooltip=document.getElementById('tooltip');
+   //   if(model.opacity==0){
+   //     tooltip.style.opacity=0;
+   //     return;
+   //   if(model.body){
+   //     const value=model.body[0].line[0];
+   //     tootip.innerHTML='<b>'+value+ "km<br/>";
+       
+  }
+ }
+
+}
+  
+// }       
+          
+});           
+
+//return chart;
+//}    
+
+//((1.8*datasources["SensorFeed"]["data"]["lastest_data"][4]["values"][0][1])+32)-(0.55-(0.0055*datasources["SensorFeed"]["data"]["lastest_data"][2]["values"][0][1]))*((1.8*datasources["SensorFeed"]["data"]["lastest_data"][4]["values"][0][1])-26)
+function myTHI(pTemp,RH){
+  var thi= (1.8*pTemp+32)-(0.55-0.0055*RH)*(1.8*pTemp-26);
+  console.log("calculateOfTHI:"+thi);
+  var mythi =Math.floor(thi + 0.5);
+  if (thi < 68) {
+    document.getElementById("infoTHI").innerHTML="No Stress"
+  }else if (thi<72){
+    document.getElementById("infoTHI").innerHTML="Stress threshold"
+  }else if (thi<80){
+    document.getElementById("infoTHI").innerHTML="Mild Stress"
+  }else if (thi<90){
+    document.getElementById("infoTHI").innerHTML="Moderate Stress"
+  }else{
+    document.getElementById("infoTHI").innerHTML="Severe Stress"
+  }
+  //var mythi = thi.toFixed(2);
+  console.log("round:"+mythi);
+  document.getElementById('boxShowTHI').value = mythi;
+  gaugeUpdate(mythi);
+  return mythi;
+}
+
+   function BuildChart(dlabels,d1,d2,d3,d4,d5){
+     chart.data.labels=dlabels;
+     //console.log("========>"+dlabels);
+     chart.data.datasets[0].data=d1;
+     //console.log("========>"+d1);
+     chart.data.datasets[1].data=d2;
+     chart.data.datasets[2].data=d3;
+     chart.data.datasets[3].data=d4;
+     chart.data.datasets[4].data=d5;
+     chart.update();
+   }
+
+                 
+                 </script>
+
+
+
+</script>
+                <!-- <h2>Input Button</h2>
+                <button onclick="myFunction()" >GetData </button> -->
+              </p>
+            </ons-page>
+          </template>
+        
+    
+</body>
+</html>
